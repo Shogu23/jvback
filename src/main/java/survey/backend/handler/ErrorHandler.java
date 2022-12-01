@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import survey.backend.error.BadRequestError;
 import survey.backend.error.ErrorMessage;
 import survey.backend.error.NoDataFoundError;
 
@@ -30,10 +31,22 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(NoDataFoundError.class)
     public ResponseEntity<ErrorMessage> handleNoDataFoundError(
         Exception ex, WebRequest request
-    ){
+    ) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ErrorMessage.builder()
                         .status(404)
+                        .error(ex.getMessage())
+                        .build()
+                );
+    }
+
+    @ExceptionHandler(BadRequestError.class)
+    public ResponseEntity<ErrorMessage> handleBadRequest(
+            Exception ex, WebRequest request
+    ) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorMessage.builder()
+                        .status(400)
                         .error(ex.getMessage())
                         .build()
                 );

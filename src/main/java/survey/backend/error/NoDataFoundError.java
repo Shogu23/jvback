@@ -13,4 +13,8 @@ public class NoDataFoundError extends RuntimeException {
                 + id
                 + " not found");
     }
+
+    public static NoDataFoundError noResults(String itemType) {
+        return new NoDataFoundError(itemType + " return 0 results");
+    }
 }
