@@ -15,6 +15,6 @@ public class NoDataFoundError extends RuntimeException {
     }
 
     public static NoDataFoundError noResults(String itemType) {
-        return new NoDataFoundError(itemType + " return 0 results");
+        return new NoDataFoundError(itemType + " search returned 0 results");
     }
 }

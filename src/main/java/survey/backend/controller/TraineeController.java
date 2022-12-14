@@ -11,9 +11,9 @@ import survey.backend.error.NoDataFoundError;
 import survey.backend.service.TraineeService;
 
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -62,6 +62,8 @@ public class TraineeController {
             @RequestParam(name="ln", required = false) String lastName,
             @RequestParam(name="fn", required = false) String firstName
     ){
+
+        // 1 ere methode
         if (lastName == null && firstName == null) {
             throw new BadRequestError("search with no args not permitted");
         }
@@ -73,8 +75,29 @@ public class TraineeController {
         if (trainees.isEmpty()) {
             throw NoDataFoundError.noResults(ITEM_TYPE);
         }
-        
+
         return traineeService.search(lastName, firstName);
+
+    /*
+        // Methode alternative
+        int size = 0;
+
+        if (lastName == null && firstName == null) {
+            throw new BadRequestError("search with no args not permitted");
+        }
+
+        Iterable<Trainee> iTrainees = traineeService.search(lastName, firstName);
+        if (iTrainees instanceof Collection) {
+            size = ((Collection<?>) iTrainees).size();
+        }
+
+
+        if (size == 0) {
+            throw NoDataFoundError.noResults(ITEM_TYPE);
+        }
+
+        return iTrainees;
+    */
     }
 
     /**
