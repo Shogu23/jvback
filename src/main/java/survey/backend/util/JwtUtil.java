@@ -1,33 +1,25 @@
 package survey.backend.util;
 
-import java.util.Date;
-
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
-
+;
 import survey.backend.exception.JwtTokenMalformedException;
 import survey.backend.exception.JwtTokenMissingException;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
+import java.util.Date;
 
 @Component
 public class JwtUtil {
-
     @Value("${jwt.secret}")
     private String jwtSecret;
 
     @Value("${jwt.token.validity}")
-    private long tokenValidity;
+    private Long jwtValidity;
 
-    public String getUserName(final String token) {
+    public String getUserLogin(final String token) {
         try {
             Claims body = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
 
@@ -44,7 +36,7 @@ public class JwtUtil {
         Claims claims = Jwts.claims().setSubject(user.getUsername());
 
         final long nowMillis = System.currentTimeMillis();
-        final long expMillis = nowMillis + tokenValidity;
+        final long expMillis = nowMillis + jwtValidity;
 
         Date exp = new Date(expMillis);
 
@@ -52,7 +44,7 @@ public class JwtUtil {
                 .signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
     }
 
-    public void validateToken(final String token) {
+    public void validateToken(final String token) throws JwtTokenMalformedException, JwtTokenMissingException {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
         } catch (SignatureException ex) {
@@ -64,7 +56,7 @@ public class JwtUtil {
         } catch (UnsupportedJwtException ex) {
             throw new JwtTokenMalformedException("Unsupported JWT token");
         } catch (IllegalArgumentException ex) {
-            throw new JwtTokenMissingException("JWT claims string is empty.");
+            throw new JwtTokenMissingException("JWT claims it s empty");
         }
     }
 

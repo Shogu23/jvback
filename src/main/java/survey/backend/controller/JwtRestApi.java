@@ -14,10 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import survey.backend.exception.DisabledUserException;
 import survey.backend.exception.InvalidUserCredentialsException;
@@ -39,7 +36,12 @@ public class JwtRestApi {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @PostMapping("/login")
+    @GetMapping("{id}")
+    public User findOne(@PathVariable int id) {
+        throw new RuntimeException("Method not implemented yet");
+    }
+
+    @PostMapping("/api/user/login")
     public ResponseEntity<Response> generateJwtToken(@RequestBody Request request) {
         Authentication authentication = null;
         try {
@@ -63,9 +65,9 @@ public class JwtRestApi {
         return new ResponseEntity<Response>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/api/user/signup")
     public ResponseEntity<String> signup(@RequestBody Request request) {
-        userAuthService.saveUser(request);
+        userAuthService.add(request);
 
         return new ResponseEntity<String>("User successfully registered", HttpStatus.OK);
     }
